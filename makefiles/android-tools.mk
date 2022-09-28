@@ -3,7 +3,7 @@ $(error Use the main Makefile)
 endif
 
 SUBPROJECTS           += android-tools
-ANDROID_TOOLS_VERSION := 31.0.3p2
+ANDROID_TOOLS_VERSION := 33.0.3
 DEB_ANDROID_TOOLS_V   ?= $(ANDROID_TOOLS_VERSION)
 
 # XXX: It looks like the build system does not build shared libraries.
