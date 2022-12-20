@@ -3,7 +3,7 @@ $(error Use the main Makefile)
 endif
 
 SUBPROJECTS           += android-tools
-ANDROID_TOOLS_VERSION := 33.0.3
+ANDROID_TOOLS_VERSION := 33.0.3p2
 DEB_ANDROID_TOOLS_V   ?= $(ANDROID_TOOLS_VERSION)
 
 # XXX: It looks like the build system does not build shared libraries.
@@ -11,7 +11,6 @@ DEB_ANDROID_TOOLS_V   ?= $(ANDROID_TOOLS_VERSION)
 android-tools-setup: setup
 	$(call DOWNLOAD_FILES,$(BUILD_SOURCE),https://github.com/nmeum/android-tools/releases/download/$(ANDROID_TOOLS_VERSION)/android-tools-$(ANDROID_TOOLS_VERSION).tar.xz)
 	$(call EXTRACT_TAR,android-tools-$(ANDROID_TOOLS_VERSION).tar.xz,android-tools-$(ANDROID_TOOLS_VERSION),android-tools)
-	$(call DO_PATCH,android-tools,android-tools,-p1)
 	mkdir -p $(BUILD_WORK)/android-tools/build
 
 ifneq ($(call HAS_COMMAND,protoc),1)
@@ -61,7 +60,7 @@ android-tools-package: android-tools-stage
 	cp -a $(BUILD_STAGE)/android-tools/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/{append2simg,img2simg,simg2img,ext2simg} $(BUILD_DIST)/android-sdk-libsparse-utils/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin
 
 	# android-tools.mk Prep android-sdk-platform-tools
-	cp -a $(BUILD_STAGE)/android-tools/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/{lpadd,lpdump,lpflash,lpmake,lpunpack,mke2fs.android} $(BUILD_DIST)/android-sdk-libsparse-utils/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin
+	cp -a $(BUILD_STAGE)/android-tools/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/{lpadd,lpdump,lpflash,lpmake,lpunpack,e2fsdroid,mke2fs.android} $(BUILD_DIST)/android-sdk-libsparse-utils/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin
 
 	# android-tools.mk Sign
 	$(call SIGN,adb,usb.xml)
