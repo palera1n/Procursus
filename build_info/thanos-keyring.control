@@ -1,0 +1,9 @@
+Package: thanos-keyring
+Version: @DEB_THANOS_KEYRING_V@
+Architecture: all
+Maintainer: @DEB_MAINTAINER@
+Author: Lana Dadabo <joemama@thanos.lol>
+Section: Keyrings
+Priority: optional
+Homepage: https://repo.thanos.lol/tv
+Description: GnuPG key for Lana Dadabo's repository
