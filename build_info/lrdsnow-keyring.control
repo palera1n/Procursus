@@ -1,0 +1,9 @@
+Package: lrdsnow-keyring
+Version: @DEB_LRDSNOW_KEYRING_V@
+Architecture: all
+Maintainer: @DEB_MAINTAINER@
+Author: Lrdsnow <lrdsnow101@gmail.com>
+Section: Keyrings
+Priority: optional
+Homepage: https://lrdsnow.github.io/PurePKG/Repo
+Description: GnuPG key for Lrdsnow's repository
