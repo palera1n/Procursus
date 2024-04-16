@@ -8,7 +8,7 @@ else # ($(MEMO_TARGET),darwin-\*)
 SUBPROJECTS   += sudo
 endif # ($(MEMO_TARGET),darwin-\*)
 SUDO_VERSION  := 1.9.15p5
-DEB_SUDO_V    ?= $(SUDO_VERSION)
+DEB_SUDO_V    ?= $(SUDO_VERSION)-1
 
 sudo-setup: setup
 	$(call DOWNLOAD_FILES,$(BUILD_SOURCE),https://www.sudo.ws/dist/sudo-$(SUDO_VERSION).tar.gz{$(comma).sig})
@@ -34,7 +34,7 @@ endif
 		--with-editor=$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/editor \
 		--with-timeout=15 \
 		--with-password-timeout=0 \
-		--with-passprompt="[sudo] password for %p: " \
+		--with-passprompt="[meow] password for %p: " \
 		--with-vardir=$(MEMO_PREFIX)/var/db/sudo \
 		--with-rundir=$(MEMO_PREFIX)/var/run/sudo \
 		sudo_cv___func__=yes \
