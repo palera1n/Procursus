@@ -13,7 +13,7 @@ SWIFT_VERSION        := 5.9.2
 SWIFT_SUFFIX         := RELEASE
 SWIFT_SYNTAX_VERSION := 509.0.2
 DEB_SWIFT_V          ?= $(SWIFT_VERSION)~$(SWIFT_SUFFIX)
-DEB_LLVM_V           ?= $(LLVM_VERSION)~$(DEB_SWIFT_V)
+DEB_LLVM_V           ?= $(LLVM_VERSION)~$(DEB_SWIFT_V)-1
 
 ifneq (,$(findstring darwin,$(MEMO_TARGET)))
 LLVM_CMAKE_FLAGS :=     -DLLDB_USE_SYSTEM_DEBUGSERVER=ON \
@@ -472,6 +472,7 @@ endif
 	for file in $(BUILD_DIST)/llvm-$(LLVM_MAJOR_V)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/llvm-$(LLVM_MAJOR_V)/bin/{bugpoint,darwin-debug,dsymutil,llvm-*,llc,obj2yaml,opt,sanstats,verify-uselistorder,yaml2obj}; do \
 		$(LN_S) $$(basename "$$file")-$(LLVM_MAJOR_V) $(BUILD_DIST)/llvm/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/$$(basename "$$file"); \
 	done
+	rm -f $(BUILD_DIST)/llvm/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/llvm-otool # Provided by odcctools
 ifeq ($(shell grep -E 'iphoneos|darwin' <<< $(MEMO_TARGET) && echo 1),1)
 	$(LN_S) ../lib/llvm-$(LLVM_MAJOR_V)/bin/complete-test $(BUILD_DIST)/llvm/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/
 endif
