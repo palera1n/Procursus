@@ -283,7 +283,9 @@ endif
 	rm -rf $(BUILD_STAGE)/llvm/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/llvm-16/lib/swift{,_static}/$(PLATFORM)/Cxx{,Stdlib}.swiftmodule
 	$(call AFTER_BUILD,,,$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/llvm-$(LLVM_MAJOR_V)/lib)
 ifneq ($(MEMO_PREFIX),)
-	-$(I_N_T) -change @rpath/libc++.1.dylib /usr/lib/libc++.1.dylib $(BUILD_STAGE)/llvm/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/llvm-16/bin/flang-new
+	-for bin in bin/flang-new bin/lldb-server lib/liblldb.16.0.0.dylib; do \
+		$(I_N_T) -change @rpath/libc++.1.dylib /usr/lib/libc++.1.dylib $(BUILD_STAGE)/llvm/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/llvm-$(LLVM_MAJOR_V)/$$bin; \
+	done
 	-$(I_N_T) -add_rpath $(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/llvm-16/lib/sourcekitd.framework $(BUILD_STAGE)/llvm/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/llvm-16/bin/sourcekitd-test
 	-$(I_N_T) -add_rpath $(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/llvm-16/lib/sourcekitd.framework $(BUILD_STAGE)/llvm/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/llvm-16/bin/sourcekitd-repl
 endif
