@@ -3,7 +3,7 @@ $(error Use the main Makefile)
 endif
 
 SUBPROJECTS           += android-tools
-ANDROID_TOOLS_VERSION := 33.0.3p2
+ANDROID_TOOLS_VERSION := 35.0.2
 DEB_ANDROID_TOOLS_V   ?= $(ANDROID_TOOLS_VERSION)
 
 # XXX: It looks like the build system does not build shared libraries.
@@ -24,11 +24,13 @@ android-tools:
 	@echo "Using previously built android-tools."
 else
 android-tools: android-tools-setup libusb pcre2 googletest libprotobuf brotli zstd lz4
-	cd $(BUILD_WORK)/android-tools/build && cmake . \
+	cd $(BUILD_WORK)/android-tools/build && cmake .. \
 		$(DEFAULT_CMAKE_FLAGS) \
 		-DCMAKE_CXX_FLAGS='$(CXXFLAGS) $(PLATFORM_VERSION_MIN) -D_DARWIN_C_SOURCE -D__DARWIN_C_LEVEL=__DARWIN_C_FULL -std=gnu++20' \
 		-DCMAKE_EXE_LINKER_FLAGS="$(LDFLAGS) -framework CoreFoundation -framework IOKit" \
-		..
+		-DANDROID_TOOLS_USE_BUNDLED_FMT=ON \
+		-DANDROID_TOOLS_USE_BUNDLED_LIBUSB=ON \
+		-DCMAKE_OSX_DEPLOYMENT_TARGET="$(shell echo $(MEMO_DEPLOYMENT) | cut -d= -f2-)"
 	+sed -i 's|$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/protoc|$(shell command -v protoc)|g' $$(find $(BUILD_WORK)/android-tools -name build.make)
 	+sed -i 's|$(shell echo $(PLATFORM_VERSION_MIN) | cut -d= -f1)=$(MACOSX_DEPLOYMENT_TARGET)|$(PLATFORM_VERSION_MIN)|g' $$(find $(BUILD_WORK)/android-tools -name flags.make)
 	+$(MAKE) -C $(BUILD_WORK)/android-tools/build
@@ -54,13 +56,13 @@ android-tools-package: android-tools-stage
 	cp -a $(BUILD_STAGE)/android-tools/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/bash-completion/completions/fastboot $(BUILD_DIST)/fastboot/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/bash-completion/completions
 
 	# android-tools.mk Prep mkbootimg
-	cp -a $(BUILD_STAGE)/android-tools/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/{mk,unpack_,repack_}bootimg $(BUILD_DIST)/mkbootimg/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin
+	cp -a $(BUILD_STAGE)/android-tools/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/{{mk,unpack_,repack_}boot,mkdtbo}img $(BUILD_DIST)/mkbootimg/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin
 
 	# android-tools.mk Prep android-sdk-libsparse-utils
-	cp -a $(BUILD_STAGE)/android-tools/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/{append2simg,img2simg,simg2img,ext2simg} $(BUILD_DIST)/android-sdk-libsparse-utils/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin
+	cp -a $(BUILD_STAGE)/android-tools/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/{avbtool,append2simg,img2simg,simg2img,ext2simg} $(BUILD_DIST)/android-sdk-libsparse-utils/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin
 
 	# android-tools.mk Prep android-sdk-platform-tools
-	cp -a $(BUILD_STAGE)/android-tools/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/{lpadd,lpdump,lpflash,lpmake,lpunpack,e2fsdroid,mke2fs.android} $(BUILD_DIST)/android-sdk-libsparse-utils/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin
+	cp -a $(BUILD_STAGE)/android-tools/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/{lpadd,lpdump,lpflash,lpmake,lpunpack,make_f2fs,mke2fs.android,sload_f2fs} $(BUILD_DIST)/android-sdk-platform-tools/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin
 
 	# android-tools.mk Sign
 	$(call SIGN,adb,usb.xml)
