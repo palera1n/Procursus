@@ -15,7 +15,8 @@ libprotobuf:
 	@echo "Using previously built libprotobuf."
 else
 libprotobuf: libprotobuf-setup
-	cd $(BUILD_WORK)/libprotobuf && ./autogen.sh
+	cd $(BUILD_WORK)/libprotobuf && autoreconf -fi
+	+sed -i 's/-keep_private_externs -nostdlib/-keep_private_externs $(PLATFORM_VERSION_MIN) -arch $(MEMO_ARCH) -nostdlib/g' $(BUILD_WORK)/libprotobuf/configure
 	cd $(BUILD_WORK)/libprotobuf && ./configure \
 		$(DEFAULT_CONFIGURE_FLAGS)
 	+$(MAKE) -C $(BUILD_WORK)/libprotobuf
